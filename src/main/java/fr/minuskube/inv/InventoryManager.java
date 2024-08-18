@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public class InventoryManager {
@@ -47,8 +48,8 @@ public class InventoryManager {
         this.plugin = plugin;
         this.pluginManager = Bukkit.getPluginManager();
 
-        this.inventories = new HashMap<>();
-        this.contents = new HashMap<>();
+        this.inventories = new ConcurrentHashMap<>();
+        this.contents = new ConcurrentHashMap<>();
 
         this.defaultOpeners = Arrays.asList(
                 new ChestInventoryOpener(),
@@ -61,7 +62,7 @@ public class InventoryManager {
     public void init() {
         pluginManager.registerEvents(new InvListener(), plugin);
 
-        new InvTask().runTaskTimer(plugin, 1, 1);
+        new InvTask().runTaskTimerAsynchronously(plugin, 1, 1);
     }
 
     public Optional<InventoryOpener> findOpener(InventoryType type) {
