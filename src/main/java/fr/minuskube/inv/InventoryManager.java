@@ -166,10 +166,12 @@ public class InventoryManager {
                 if (row >= inv.getRows() || column >= inv.getColumns())
                     return;
 
-                inv.getListeners().stream()
-                        .filter(listener -> listener.getType() == InventoryClickEvent.class)
-                        .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
-
+                if(!inv.getListeners().isEmpty()) {
+                    inv.getListeners().stream()
+                            .filter(listener -> listener.getType() == InventoryClickEvent.class)
+                            .forEach(listener -> ((InventoryListener<InventoryClickEvent>) listener).accept(e));
+                }
+                inv.getProvider().onClick(p, e.getCurrentItem(), e.getAction(), e.getSlot());
                 contents.get(p.getUniqueId()).get(row, column).ifPresent(item -> item.run(e));
 
                 p.updateInventory();
